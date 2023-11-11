@@ -6,7 +6,7 @@
 
 int tutorial_main(int argc, char *argv[])
 {
-    GstElement *pipeline, *source, *sink;
+    GstElement *pipeline, *source, *filter, *sink;
     GstBus *bus;
     GstMessage *msg;
     GstStateChangeReturn ret;
@@ -16,20 +16,21 @@ int tutorial_main(int argc, char *argv[])
 
     /* Create the elements */
     source = gst_element_factory_make("videotestsrc", "source");
+    filter = gst_element_factory_make("vertigotv", "filter");
     sink = gst_element_factory_make("autovideosink", "sink");
 
     /* Create the empty pipeline */
     pipeline = gst_pipeline_new("test-pipeline");
 
-    if (!pipeline || !source || !sink)
+    if (!pipeline || !source || !sink || !filter)
     {
         g_printerr("Not all elements could be created.\n");
         return -1;
     }
 
     /* Build the pipeline */
-    gst_bin_add_many(GST_BIN(pipeline), source, sink, NULL);
-    if (gst_element_link(source, sink) != TRUE)
+    gst_bin_add_many(GST_BIN(pipeline), source, filter, sink, NULL);
+    if (gst_element_link_many(source, filter, sink, NULL) != TRUE)
     {
         g_printerr("Elements could not be linked.\n");
         gst_object_unref(pipeline);
@@ -37,7 +38,7 @@ int tutorial_main(int argc, char *argv[])
     }
 
     /* Modify the source's properties */
-    g_object_set(source, "pattern", 2, NULL);
+    g_object_set(source, "pattern", 0, NULL);
 
     /* Start playing */
     ret = gst_element_set_state(pipeline, GST_STATE_PLAYING);
