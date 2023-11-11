@@ -3,8 +3,8 @@ Mindenféle finomság, ami Gstream-el kapcsolatos
 
 ## TODO
 ### [GStream alapok elsajátítása](https://gstreamer.freedesktop.org/documentation/tutorials/basic/hello-world.html?gi-language=c)
- - [ ] Hello World!
- - [ ] GStreamer concepts
+ - [x] Hello World!
+ - [x] GStreamer concepts
  - [ ] Dynamic pipelines
  - [ ] Time management
  - [ ] GUI toolkit integration
