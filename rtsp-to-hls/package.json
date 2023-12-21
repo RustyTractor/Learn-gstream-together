@@ -1,0 +1,12 @@
+{
+  "name": "rtsp-to-hls",
+  "version": "1.0.0",
+  "description": "- ```gst-launch-1.0 rtspsrc location=\"rtsp://.....\" ! rtph264depay ! h264parse ! hlssink2 max-file=5```",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
