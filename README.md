@@ -53,6 +53,14 @@ Mindenféle finomság, ami Gstream-el kapcsolatos
 
  ```gst-launch-1.0  udpsrc port=5600 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" ! rtpjitterbuffer ! rtph264depay ! decodebin ! videoconvert ! autovideosink```
 
+### Pipeline az h265 küldéséhez
+
+```gst-launch-1.0 videotestsrc ! decodebin ! videoconvert ! "video/x-raw, format=(string)I420" ! x265enc name=encoder ! rtph265pay config-interval=1 ! udpsink host=127.0.0.1 port=1234```
+
+### Pipeline h265 strem fogdaásához
+
+```gst-launch-1.0 udpsrc port=5600 buffer-size=164000 ! application/x-rtp ! rtpjitterbuffer ! rtph265depay ! avdec_h265 output-corrupt=false ! videoconvert ! autovideosink```
+
 ### RTSP Stream Forwardolása
 
  https://stackoverflow.com/questions/14430104/how-to-   forward-rtp-stream-with-gstreamer
@@ -73,7 +81,25 @@ Mindenféle finomság, ami Gstream-el kapcsolatos
 
 ### Videó fogadása és lejátszása UDP portról
 
-```gst-launch-1.0  udpsrc port=5600 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" ! rtpjitterbuffer ! rtph264depay ! decodebin ! videoconvert ! autovideosink```
+```gst-launch-1.0  udpsrc port=5600 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" ! rtpjitterbuffer ! rtph264depay ! decodebin ! videoconvert ! videoconvert ! autovideosink```
+
+### Videó küldése tcp-vel
+
+```gst-launch-1.0 videotestsrc is-live=true ! x264enc ! rtph264pay ! rtpstreampay ! tcpclientsink host=127.0.0.1 port=7001```
+
+### Video fogádása tcp-vel
+
+```gst-launch-1.0 tcpserversrc host=127.0.0.1 port=7001 ! application/x-rtp-stream, encoding-name=H264 ! rtpstreamdepay ! rtph264depay ! avdec_h264 ! videoconvert ! autovideosink```
+
+### Play video from filesrc 
+
+```gst-launch-1.0 filesrc location=<filename> ! decodebin ! x264enc ! rtph264pay config-interval=1 ! udpsink host=<host> port=<port>```
+
+### Save video from udpsrc 
+
+```gst-launch-1.0  udpsrc port=5600 caps = "application/x-rtp, media=(string)video, clock-rate=(int)90000, encoding-name=(string)H264, payload=(int)96" ! rtpjitterbuffer ! rtph264depay ! h264parse ! mp4mux ! filesink location=randomvide.mp4 -e```
+
+```gst-launch-1.0 udpsrc port=5600 buffer-size=164000 ! application/x-rtp ! rtpjitterbuffer ! rtph265depay ! avdec_h265 ! tee name=t ! queue ! videoconvert ! videorate ! video/x-raw,framerate=1/1 ! rtpvrawpay ! udpsink port=5602```
 
 
 
