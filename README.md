@@ -101,6 +101,10 @@ Mindenféle finomság, ami Gstream-el kapcsolatos
 
 ```gst-launch-1.0 udpsrc port=5600 buffer-size=164000 ! application/x-rtp ! rtpjitterbuffer ! rtph265depay ! avdec_h265 ! tee name=t ! queue ! videoconvert ! videorate ! video/x-raw,framerate=1/1 ! rtpvrawpay ! udpsink port=5602```
 
+### Display and forwad with UDP
+
+```gst-launch-1.0 filesrc location=buildings-1-265.mp4 ! tee name=t ! queue ! h265parse ! rtph265pay config-interval=-1 mtu=1400 ! udpsink host=127.0.0.1 port=5600 t. ! queue ! h265parse ! avdec_h265 ! videoconvert ! videoscale ! video/x-raw,height=720  ! autovideosink```
+
 
 
 
